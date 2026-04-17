@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: ticket_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ticket_system
+      MYSQL_USER: ticket_user
+      MYSQL_PASSWORD: ticket_pass
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"   # host:container (żeby nie wchodzić w konflikt z lokalnym MySQL)
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+
+  app:
+    build: .
+    container_name: ticket_app
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.docker
+    environment:
+      # nadpisanie hosta bazy na nazwę serwisu z compose
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ticket_user
+      DB_PASSWORD: ticket_pass
+      DB_NAME: ticket_system
+
+      # Next.js
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+
+      # URL apki wewnątrz kontenera (dla linków w mailach)
+      APP_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ticket_phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_USER: ticket_user
+      PMA_PASSWORD: ticket_pass
+    ports:
+      - "8080:80"

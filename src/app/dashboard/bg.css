@@ -1,0 +1,24 @@
+/* Shared background for ALL /dashboard/* pages */
+.authed-bg {
+  min-height: 100vh;
+  width: 100%;
+  background: url('/bg.jpg') no-repeat center center / cover;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle dark overlay for readability */
+.authed-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 15, 26, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 0;
+}
+
+/* Make sure page content sits above overlay */
+.authed-bg > * {
+  position: relative;
+  z-index: 1;
+}

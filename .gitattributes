@@ -1,0 +1,28 @@
+# --- FORCED LANGUAGE DETECTION FOR GITHUB ---
+
+# Treat Dockerfile as Docker
+Dockerfile linguist-language=Dockerfile
+
+# docker-compose.yml treated as Docker too
+docker-compose.yml linguist-language=Dockerfile
+
+# SQL in /db folder  
+*.sql linguist-language=SQL
+db/* linguist-language=SQL
+
+# JSON = ignore (not counted as language)
+*.json linguist-detectable=false
+
+# Ignore lockfiles  
+package-lock.json linguist-detectable=false
+
+# Markdown always counted
+*.md linguist-language=Markdown
+
+# CSS
+*.css linguist-language=CSS
+
+# JS + JSX + MJS
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JavaScript
+*.mjs linguist-language=JavaScript
